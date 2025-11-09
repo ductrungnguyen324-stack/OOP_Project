@@ -1,0 +1,14 @@
+=============================================================================================
+                                   DANH SACH SAN PHAM                                        
+=============================================================================================
+Ma san pham     Ten san pham                   Loai san pham   Gia ban      Nha san xuat        
+SP001           But bi Thien Long              But bi          5000.0       Thien Long          
+SP002           Vo ke ngang Campus             So ghi          15000.0      Campus              
+SP003           Thuoc ke nhua 30cm             Thuoc           8000.0       Viet Nam            
+SP004           But chi 2B                     But chi         3000.0       Thien Long          
+SP005           Tay trang                      Dung cu         2000.0       Viet Nam            
+SP006           But da quang                   But viet        12000.0      Thien Long          
+SP007           Giay A4 (500 to)               Giay            80000.0      Double A4           
+SP008           Keo van phong                  Dung cu         25000.0      Viet Nam            
+=============================================================================================
+Tong so san pham : 8

@@ -1,0 +1,8 @@
+SP001,But bi Thien Long,But bi,5000,Thien Long,Xanh,0.7
+SP002,Vo ke ngang Campus,So ghi,15000,Campus,100,Cung
+SP003,Thuoc ke nhua 30cm,Thuoc,8000,Viet Nam
+SP004,But chi 2B,But chi,3000,Thien Long,Chi kim,0.7mm
+SP005,Tay trang,Dung cu,2000,Viet Nam
+SP006,But da quang,But viet,12000,Thien Long
+SP007,Giay A4 (500 to),Giay,80000,Double A4,A4
+SP008,Keo van phong,Dung cu,25000,Viet Nam
