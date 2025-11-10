@@ -1,0 +1,10 @@
+NV001; Nguyen Thi Thu; 0935xxxxxx; 12K Cach Mang Thang Tam, Phuong 10, TP.HCM; Thu ngan; 7500000
+NV002; Tran Van Hung; 0981xxxxxx; 79/4 Le Loi, Quan 1, TP.HCM; Nhan vien Thu ngan; 7500000
+NV003; Le Minh Thu; 0703xxxxxx; 56/A2 Pham Van Dong, Phuong 3, TP.HCM; Nhan vien Ban hang; 7000000
+NV004; Pham Gia Bao; 0869xxxxxx; 34 Binh Loi, Quan Binh Thanh, TP.HCM; Nhan vien Kho; 6800000
+NV005; Hoang Thi Mai; 0386xxxxxx; 205/1 Nguyen Thi Minh Khai, Phuong 7, TP.HCM; Nhan vien Ban hang; 7000000
+NV006; Do Anh Kiet; 0962xxxxxx; 453 Tran Hung Dao, Quan 5, TP.HCM; Nhan vien Tu van Dich vu; 8000000
+NV007; Vu Thanh Tam; 0914xxxxxx; 80/B2 Vo Van Tan, Phuong 5, TP.HCM; Nhan vien Thu ngan; 7500000
+NV008; Bui Van Duc; 0775xxxxxx; 345/7 Duong 30/4, Quan 7, TP.HCM; Nhan vien Ban hang; 7000000
+NV009; Nguyen Huy Tung; 0397xxxxxx; So 18, Duong 2, Quan Thu Duc, TP.HCM; Nhan vien Kho; 6800000
+NV010; Cao Phuong Vy; 0888xxxxxx; 15B/2 Nguyen Dinh Chieu, Phuong 4, TP.HCM; Thuc tap sinh Ban hang; 5500000
