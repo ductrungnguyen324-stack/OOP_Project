@@ -77,7 +77,7 @@ class KhachHang extends ConNguoi {
     
     public KhachHang(){ SoLuongKH++;}
 
-    public KhachHang(String MaKH, String LoaiKH, double DiemTichLuy, String HoTen, String SDT, String DiaChi){
+    public KhachHang(String MaKH, String HoTen, String SDT, String DiaChi, String LoaiKH, double DiemTichLuy){
         super(HoTen, SDT, DiaChi);
         this.MaKH= MaKH;
         this.DiemTichLuy= DiemTichLuy;
@@ -95,7 +95,7 @@ class KhachHang extends ConNguoi {
 
     @Override
     public void HienThiThongTin(){
-        System.out.printf("%-15s %-20s %-20s %-50s %-10s %-,15.0f %n", MaKH, getHoTen(), getSDT(), getDiaChi(), LoaiKH, DiemTichLuy);
+        System.out.printf("%-15s %-20s %-20s %-50s %-20s %-,15.0f %n", MaKH, getHoTen(), getSDT(), getDiaChi(), LoaiKH, DiemTichLuy);
     }
 }
 
@@ -639,9 +639,9 @@ class QuanLyNhanVien implements IQuanLy<NhanVien>
     {
         boolean found = DSNhanVien.removeIf(SP -> SP.getMaNV().equals(MaNV));
         if (found)
-            System.out.println("Da xoa san pham co ma la " + MaNV);
+            System.out.println("Da xoa nhan vien co ma la " + MaNV);
         else
-            System.out.println("Khong tim thay san pham co ma la " + MaNV);
+            System.out.println("Khong tim thay nhan vien co ma la " + MaNV);
     }
 
     @Override
@@ -676,13 +676,6 @@ class QuanLyNhanVien implements IQuanLy<NhanVien>
     
         System.out.println("================================================================================================================================================");
         System.out.println("Tong so nhan vien : " + DSNhanVien.size());
-    }
-
-    public NhanVien TimTheoMa(String MaNV)
-    {
-        for (NhanVien NV : DSNhanVien)
-            if (NV.getMaNV().equals(MaNV)) return NV;
-        return null;
     }
 
     @Override
@@ -736,6 +729,181 @@ class QuanLyNhanVien implements IQuanLy<NhanVien>
 }
 
 
+// =============== QUẢN LÝ KHACH HANG ===============
+class QuanLyKhachHang implements IQuanLy<KhachHang>
+{
+    private List<KhachHang> DSKhachHang;
+    private static QuanLyKhachHang instance;
+
+    public QuanLyKhachHang()
+    {
+        DSKhachHang = new ArrayList<>();
+    }
+
+    public static QuanLyKhachHang getInstance()
+    {
+        if (instance == null) 
+        {
+            instance = new QuanLyKhachHang();
+        }
+        return instance;
+    }
+
+    @Override
+    public void Them(KhachHang KH)
+    {
+        DSKhachHang.add(KH);
+        System.out.println("Da them khach hang : " + KH.getHoTen() + "!");
+    }
+
+    @Override
+    public void Sua(Scanner sc){
+        System.out.print(" Nhap Ma KH can sua: ");
+        String Ma= sc.nextLine();
+        boolean ketqua= false;
+        for (KhachHang kh: DSKhachHang){
+            if (kh.getMaKH().equalsIgnoreCase(Ma)){
+                ketqua= true;
+                int Choice;
+                do {
+                    System.out.println(" Chon muc can sua: ");
+                    System.out.println(" 1. Ho Ten");
+                    System.out.println(" 2. SDT");
+                    System.out.println(" 3. Dia Chi");
+                    System.out.println(" 4. Loai KH");
+                    System.out.println(" 5. Diem Tich Luy");
+                    System.out.print(" 6. Thoat ");
+                    Choice= sc.nextInt();
+                    sc.nextLine();
+                    switch (Choice){
+                        case 1:
+                            System.out.print(" Nhap lai Ho Ten: ");
+                            kh.setHoTen(sc.nextLine());
+                            break;
+                        case 2:
+                            System.out.print(" Nhap lai SDT: ");
+                            kh.setSDT(sc.nextLine());
+                            break;
+                        case 3:
+                            System.out.print(" Nhap lai Dia Chi: ");
+                            kh.setDiaChi(sc.nextLine());
+                            break;
+                        case 4:
+                            System.out.print(" Nhap lai Loai KH: ");
+                            kh.setLoaiKH(sc.nextLine());
+                            break;
+                        case 5:
+                            System.out.print(" Nhap lai Diem Tich Luy: ");
+                            kh.setDiemTichLuy(Double.parseDouble(sc.nextLine()));
+                            break;
+                        case 6:
+                            System.out.print(" Thoat chinh sua");
+                            break;
+                        default:
+                            System.out.print(" Khong hop le");
+                    }
+                } while (Choice!=6);       
+            }
+        }
+        if (!ketqua){ System.out.print(" Khong tim thay ma");}
+    }
+
+    @Override
+    public void Xoa(String MaKH)
+    {
+        boolean found = DSKhachHang.removeIf(SP -> SP.getMaKH().equals(MaKH));
+        if (found)
+            System.out.println("Da xoa khach hang co ma la " + MaKH);
+        else
+            System.out.println("Khong tim thay khach hang co ma la " + MaKH);
+    }
+
+    @Override
+    public List<KhachHang> TimKiem(String TuKhoa)
+    {
+        List<KhachHang> Kq = new ArrayList<>();
+        boolean found = false;
+        for (KhachHang KH : DSKhachHang)
+        {
+            if (KH.getMaKH().toLowerCase().contains(TuKhoa.toLowerCase()) || KH.getHoTen().toLowerCase().contains(TuKhoa.toLowerCase()) ||
+                KH.getLoaiKH().toLowerCase().contains(TuKhoa.toLowerCase()))
+            {
+                Kq.add(KH);
+                found = true;
+            } 
+        }
+        if (!found) System.out.println("Khong tim thay khach hang nao");
+        return Kq;
+    }
+
+    @Override
+    public void XemDanhSach()
+    {
+        System.out.println("===============================================================================================================================================");
+        System.out.println("                                                             DANH SACH KHACH HANG                                                              ");
+        System.out.println("===============================================================================================================================================");
+        System.out.printf("%-15s %-20s %-20s %-50s %-20s %-15s %n", "Ma khach hang", "Ho ten", "So dien thoai", "Dia chi", "Loai khach hang", "Diem tich luy");
+        System.out.println("===============================================================================================================================================");
+        
+        for (KhachHang KH : DSKhachHang)
+            KH.HienThiThongTin();
+    
+        System.out.println("===============================================================================================================================================");
+        System.out.println("Tong so khach hang : " + DSKhachHang.size());
+    }
+
+    @Override
+    public void DocFile(String InputFile){
+        try (BufferedReader br = new BufferedReader(new FileReader(InputFile))){
+            String Line;
+            while ((Line= br.readLine())!= null){
+                String[] data= Line.split(";");
+                if (data.length==6){
+                    String MaKH= data[0].trim();
+                    String HoTen = data[1].trim();
+                    String SDT = data[2].trim();
+                    String DiaChi = data[3].trim();
+                    String LoaiKH = data[4].trim();
+                    double DiemTichLuy = Double.parseDouble(data[5].trim());
+                    DSKhachHang.add(new KhachHang(MaKH, HoTen, SDT, DiaChi, LoaiKH, DiemTichLuy));
+                }
+            }
+            System.out.println("Da doc file " + InputFile);
+        } 
+        catch (IOException e) {System.out.println("Loi doc file " + e.getMessage());}
+    }   
+
+    @Override
+    public void GhiFile(String OutputFile)
+    {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(OutputFile)))
+        {
+            bw.write("==============================================================================================================================================="); bw.newLine();
+            bw.write("                                                            DANH SACH KHACH HANG                                                               "); bw.newLine();
+            bw.write("==============================================================================================================================================="); bw.newLine();
+            
+            String HeaderLine = String.format("%-15s %-20s %-20s %-50s %-15s %-15s %n", "Ma khach hang", "Ho ten", "So dien thoai", "Dia chi", "Loai khach hang", "Diem tich luy");
+
+            bw.write(HeaderLine);
+            bw.newLine();
+
+            for (KhachHang KH : DSKhachHang)
+            {
+                bw.write(String.format("%-15s %-20s %-20s %-50s %-15s %-15s", KH.getMaKH(), KH.getHoTen(), KH.getSDT(), KH.getDiaChi(), KH.getLoaiKH(), KH.getDiemTichLuy()));
+                bw.newLine();
+            }
+
+            bw.write("==============================================================================================================================================="); bw.newLine();
+            bw.write("Tong so nhan vien : " + DSKhachHang.size());
+        }
+        catch (IOException e) 
+        {
+            System.out.println("Loi ghi file : " + e.getMessage());
+        }
+    }
+}
+
+
 // =============== MAIN ===============
 public class OOP_Project 
 {
@@ -746,6 +914,8 @@ public class OOP_Project
         //Đọc file
         QuanLyNhanVien QLNV = QuanLyNhanVien.getInstance();
         QLNV.DocFile("nhanvien.txt");
+        QuanLyKhachHang QLKH = QuanLyKhachHang.getInstance();
+        QLKH.DocFile("khachhang.txt");
         QuanLySanPham QLSP = QuanLySanPham.getInstance();
         QLSP.DocFile("sanpham.txt");
 
@@ -759,7 +929,7 @@ public class OOP_Project
 
             switch (choice) 
             {
-                case 1: 
+                case 1: MenuKhachHang(); break;
                 case 2: MenuNhanVien(); break;
                 case 3: MenuSanPham(); break;
             
@@ -963,6 +1133,78 @@ public class OOP_Project
 
                 case 5:
                     QLNV.GhiFile("danhsach_nhanvien.txt"); 
+                    break;
+
+                case 0:
+                    return;
+
+                default:
+                    System.out.println("Lua chon khong hop le.");
+                    break;
+            }
+            Pause();
+        } while (true);
+    }
+
+    // =============== HÀM HIỂN THỊ MENU QUẢN LÝ KHÁCH HÀNG ===============
+    private static void MenuKhachHang()
+    {
+        QuanLyKhachHang QLKH = QuanLyKhachHang.getInstance();
+        do 
+        {
+            ClearScreen();
+            QLKH.XemDanhSach();
+            System.out.print("\n\n\n");
+            System.out.println("=============================================================================================");
+            System.out.println("                                  QUAN LY KHACH HANG                                         ");
+            System.out.println("=============================================================================================");
+            System.out.println("      1. Them khach hang moi");
+            System.out.println("      2. Xoa khach hang");
+            System.out.println("      3. Sua thong tin khach hang");
+            System.out.println("      4. Tim kim khach hang");
+            System.out.println("      5. Luu danh sach khach hang vao file");
+            System.out.println("      0. Quay lai Menu Chinh");
+            System.out.println("=============================================================================================");
+
+            System.out.print("Chon chuc nang : ");
+            int choice = sc.nextInt(); sc.nextLine();
+
+            switch (choice) 
+            {
+                case 1:
+                    System.out.print("Ma KH : "); String ma = sc.nextLine().trim();
+                    System.out.print("Ho va ten : "); String hoten = sc.nextLine().trim();
+                    System.out.print("So dien thoai : "); String sdt = sc.nextLine().trim();
+                    System.out.print("Dia chi : "); String diachi = sc.nextLine().trim();
+                    System.out.print("Loai khach hang : "); String loai = sc.nextLine().trim();
+                    System.out.print("Diem tich luy : "); double diem = sc.nextDouble();
+
+                    QLKH.Them(new KhachHang(ma, hoten, sdt, diachi, loai, diem));
+                    break;
+
+                case 2:
+                    System.out.print("Nhap ma cua khach hang : "); String maKH = sc.nextLine().trim();
+                    QLKH.Xoa(maKH);
+                    break;
+
+                case 3:
+                    QLKH.Sua(sc);
+                    break;
+
+                case 4:
+                    System.out.print("Nhap ma khach hang (hoac ho ten, loai khach hang) : "); String tukhoa = sc.nextLine().trim();
+                    List<KhachHang> NV_Found = QLKH.TimKiem(tukhoa);
+                    System.out.println("===============================================================================================================================================");
+                    System.out.println("                                                               KET QUA TIM KIEM                                                               " );
+                    System.out.println("===============================================================================================================================================");
+                    System.out.printf("%-15s %-20s %-20s %-50s %-15s %-15s %n", "Ma khach hang", "Ho ten", "So dien thoai", "Dia chi", "Loai khach hang", "Diem tich luy");
+                    System.out.println("===============================================================================================================================================");
+                    for (KhachHang KH : NV_Found)
+                        KH.HienThiThongTin();
+                    break;
+
+                case 5:
+                    QLKH.GhiFile("danhsach_khachhang.txt"); 
                     break;
 
                 case 0:

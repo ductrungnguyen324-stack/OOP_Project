@@ -1,0 +1,10 @@
+KH001; Le Van Tien; 0905xxxxxx; 55 Nguyen Hue, Phuong 1, Hue; VIP; 480
+KH002; Tran Khanh Linh; 0379xxxxxx; 102 To Hien Thanh, Quan 10, TP.HCM; Than Thiet; 310
+KH003; Mai Anh Khoa; 0898xxxxxx; 34C Duong 3/2, Phuong An Binh, Can Tho; Thuong; 75
+KH004; Vo Thi Hong; 0766xxxxxx; Nha C2, KTT Binh Minh, Phuong Mai Dich, Ha Noi; Than Thiet; 245
+KH005; Phan Duy Khanh; 0333xxxxxx; 188 Le Duan, Phuong Hoa Khanh, Da Nang; Thuong; 105
+KH006; Nguyen My Hanh; 0947xxxxxx; 77B Tran Phu, Phuong 9, Da Lat; VIP; 550
+KH007; Cao Minh Quan; 0812xxxxxx; So 5, Khu Pho 4, Phuong Long Binh, Dong Nai; Thuong; 45
+KH008; Hoang Van Tai; 0975xxxxxx; 99/A Ly Thuong Kiet, Phuong 2, Vung Tau; Than Thiet; 170
+KH009; Dinh Thi Ngoc; 0368xxxxxx; 22/10 Pho Hang Ngang, Quan Hoan Kiem, Ha Noi; Thuong; 95
+KH010; Bui Trong Nghia; 0834xxxxxx; 145/6 Duong 15, Phuong An Phu, Binh Duong; Than Thiet; 300
