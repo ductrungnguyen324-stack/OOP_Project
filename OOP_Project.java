@@ -205,9 +205,11 @@ class HoaDon {
     private Date ngayLap;
     private List<ChiTietHoaDon> dsChiTiet;
     private double tongTien;
+    private static int SoLuongHD = 0;
 
     public HoaDon() {
         this.dsChiTiet = new ArrayList<>();
+        SoLuongHD++;
     }
 
     public HoaDon(String maHD, String maKH, String maNV, Date ngayLap) {
@@ -217,6 +219,7 @@ class HoaDon {
         this.ngayLap = ngayLap;
         this.dsChiTiet = new ArrayList<>();
         this.tongTien = 0;
+        SoLuongHD++;
     }
 
     // Getters
@@ -226,6 +229,7 @@ class HoaDon {
     public Date getNgayLap() { return ngayLap; }
     public double getTongTien() { return tongTien; }
     public List<ChiTietHoaDon> getDsChiTiet() { return dsChiTiet; }
+    public static int getSoLuongHD() { return SoLuongHD; }
 
     // Setters
     public void setMaHD(String maHD) { this.maHD = maHD; }
@@ -1203,19 +1207,10 @@ class QuanLyHoaDon implements IQuanLy<HoaDon>
         System.out.println("Tong so hoa don : " + DSHoaDon.size()); // Thay đổi
     }
 
-    /**
-     * HÀM MỚI: Thống kê doanh thu theo UML
-     * Cần import java.util.Date và java.text.SimpleDateFormat
-     */
-    public double ThongKeDoanhThu(Date tuNgay, Date denNgay) {
+    public double ThongKeDoanhThu() {
         double tongDoanhThu = 0;
         for (HoaDon hd : DSHoaDon) { // Thay đổi
-            Date ngayLap = hd.getNgayLap();
-            // Kiểm tra xem ngayLap có nằm trong khoảng [tuNgay, denNgay] không
-            // !(ngayLap < tuNgay) && !(ngayLap > denNgay)
-            if (!ngayLap.before(tuNgay) && !ngayLap.after(denNgay)) {
-                tongDoanhThu += hd.getTongTien();
-            }
+            tongDoanhThu += hd.getTongTien();
         }
         return tongDoanhThu;
     }
@@ -1365,8 +1360,8 @@ public class OOP_Project
                 case 1: MenuKhachHang(); break;
                 case 2: MenuNhanVien(); break;
                 case 3: MenuSanPham(); break;
-
                 case 4: MenuHoaDon(); break;
+                case 5: ThongKe(); break;
 
                 default: System.out.println("Lua chon khong hop le."); break;
             }
@@ -1493,7 +1488,7 @@ public class OOP_Project
                     break;
 
                 case 6:
-                    QLSP.GhiFile("danhsach.txt"); 
+                    QLSP.GhiFile("danhsach_sanpham.txt"); 
                     break;
 
                 case 0:
@@ -1804,8 +1799,22 @@ public class OOP_Project
             }
             Pause();
         } while (true);
+    }
 
+    private static void ThongKe()
+    {
+        ClearScreen();
+        System.out.println("=========================================================");
+        System.out.println("                     THONG KE HE THONG                   ");
+        System.out.println("=========================================================");
+        System.out.printf("Tong so nhan vien: %3d %n", NhanVien.getSoLuongNV());
+        System.out.printf("Tong so khach hang: %3d %n", KhachHang.getSoLuongKH());
+        System.out.printf("Tong so san pham: %3d %n", SanPham.getSoLuongSP());
+        System.out.printf("Tong so hoa don: %3d %n", HoaDon.getSoLuongHD());
 
+        QuanLyHoaDon QLHD = QuanLyHoaDon.getInstance();
+        System.out.printf("Tong doanh thu: %,3.0f %n", QLHD.ThongKeDoanhThu());
+        System.out.println("=========================================================");
     }
 }
 
