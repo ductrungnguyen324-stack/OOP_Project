@@ -1,7 +1,6 @@
-import java.util.*;
 import java.io.*;
-//import java.text.SimpleDateFormat;
-
+import java.text.SimpleDateFormat;
+import java.util.*;
 // =============== INTERFACE ===============
 interface IQuanLy<I>
 {
@@ -150,7 +149,160 @@ class SanPham
         System.out.printf("%-15s %-30s %-15s %-,12.0f %-20s %n", MaSP, TenSP, LoaiSP, GiaBan, NhaSanXuat);
     }
 }
+// =============== CHI TIẾT HÓA ĐƠN ===============
+class ChiTietHoaDon {
+    private String MaCTHD;
+    private String MaSP; // Thay đổi: Lưu MaSP (String) thay vì đối tượng SanPham
+    private int soLuong;
+    private double donGia; // Lưu lại đơn giá tại thời điểm mua
+    private double thanhTien;
 
+    public ChiTietHoaDon() {}
+
+    public ChiTietHoaDon(String maCTHD, String maSP, int soLuong, double donGia) {
+        this.MaCTHD = maCTHD;
+        this.MaSP = maSP;
+        this.soLuong = soLuong;
+        this.donGia = donGia;
+        this.thanhTien = TinhThanhTien();
+    }
+
+    // Getters
+    public String getMaCTHD() { return MaCTHD; }
+    public String getMaSP() { return MaSP; } // Thay đổi: Đổi tên từ getSanPham()
+    public int getSoLuong() { return soLuong; }
+    public double getDonGia() { return donGia; }
+    public double getThanhTien() { return thanhTien; }
+
+    // Setters
+    public void setSoLuong(int soLuong) { 
+        this.soLuong = soLuong;
+        this.thanhTien = TinhThanhTien(); // Cập nhật lại thành tiền
+    }
+
+    public double TinhThanhTien() {
+        return this.soLuong * this.donGia;
+    }
+
+    public void HienThiChiTiet() {
+        // Vì chỉ có MaSP, ta phải tìm đối tượng SanPham để lấy Tên SP
+        SanPham sp = QuanLySanPham.getInstance().TimTheoMa(this.MaSP);
+        String tenSP = (sp != null) ? sp.getTenSP() : "[Sản phẩm không tồn tại]";
+        
+        System.out.printf("%-15s %-30s %-10d %-,15.0f %-,15.0f %n", 
+            MaSP, 
+            tenSP, 
+            soLuong, 
+            donGia, 
+            thanhTien);
+    }
+}
+// =============== HÓA ĐƠN ===============
+class HoaDon {
+    private String maHD;
+    private String MaKH; // Thay đổi: Lưu MaKH (String)
+    private String MaNV; // Thay đổi: Lưu MaNV (String)
+    private Date ngayLap;
+    private List<ChiTietHoaDon> dsChiTiet;
+    private double tongTien;
+
+    public HoaDon() {
+        this.dsChiTiet = new ArrayList<>();
+    }
+
+    public HoaDon(String maHD, String maKH, String maNV, Date ngayLap) {
+        this.maHD = maHD;
+        this.MaKH = maKH;
+        this.MaNV = maNV;
+        this.ngayLap = ngayLap;
+        this.dsChiTiet = new ArrayList<>();
+        this.tongTien = 0;
+    }
+
+    // Getters
+    public String getMaHD() { return maHD; }
+    public String getMaKH() { return MaKH; } // Thay đổi
+    public String getMaNV() { return MaNV; } // Thay đổi
+    public Date getNgayLap() { return ngayLap; }
+    public double getTongTien() { return tongTien; }
+    public List<ChiTietHoaDon> getDsChiTiet() { return dsChiTiet; }
+
+    // Setters
+    public void setMaHD(String maHD) { this.maHD = maHD; }
+    public void setMaKH(String maKH) { this.MaKH = maKH; }
+    public void setMaNV(String maNV) { this.MaNV = maNV; }
+    public void setNgayLap(Date ngayLap) { this.ngayLap = ngayLap; }
+
+    // Hàm tính tổng tiền (nội bộ)
+    public void TinhTongTien() {
+        this.tongTien = 0;
+        for (ChiTietHoaDon ct : dsChiTiet) {
+            this.tongTien += ct.getThanhTien();
+        }
+    }
+
+    // Thêm chi tiết vào hóa đơn
+    public void themChiTiet(ChiTietHoaDon chiTiet) {
+        dsChiTiet.add(chiTiet);
+        TinhTongTien(); // Cập nhật lại tổng tiền mỗi khi thêm
+    }
+    
+    // Xóa chi tiết khỏi hóa đơn (theo yêu cầu UML)
+    public void xoaChiTiet(String MaCTHD) {
+        boolean removed = dsChiTiet.removeIf(ct -> ct.getMaCTHD().equals(MaCTHD));
+        if (removed) {
+            System.out.println("Da xoa chi tiet " + MaCTHD);
+            TinhTongTien(); // Cập nhật lại tổng tiền
+        } else {
+            System.out.println("Khong tim thay chi tiet " + MaCTHD);
+        }
+    }
+
+    // Hiển thị thông tin tóm tắt
+    public void HienThiThongTin() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        
+        // Phải tra cứu tên từ MaKH và MaNV
+        KhachHang kh = QuanLyKhachHang.getInstance().TimTheoMa(this.MaKH);
+        NhanVien nv = QuanLyNhanVien.getInstance().TimTheoMa(this.MaNV);
+        
+        String tenKH = (kh != null) ? kh.getHoTen() : "[KH khong ton tai]";
+        String tenNV = (nv != null) ? nv.getHoTen() : "[NV khong ton tai]";
+
+        System.out.printf("%-15s %-25s %-20s %-20s %-,15.0f %n", 
+            maHD, 
+            sdf.format(ngayLap), 
+            tenKH, 
+            tenNV, 
+            tongTien);
+    }
+
+    // Hiển thị chi tiết hóa đơn
+    public void HienThiChiTietHoaDon() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        
+        // Tra cứu tên
+        KhachHang kh = QuanLyKhachHang.getInstance().TimTheoMa(this.MaKH);
+        NhanVien nv = QuanLyNhanVien.getInstance().TimTheoMa(this.MaNV);
+        String tenKH = (kh != null) ? kh.getHoTen() : "[N/A]";
+        String tenNV = (nv != null) ? nv.getHoTen() : "[N/A]";
+
+        System.out.println("==========================================================================================");
+        System.out.println("                                  CHI TIET HOA DON                                        ");
+        System.out.println("Ma hoa don: " + maHD + "\t\t\tNgay lap: " + sdf.format(ngayLap));
+        System.out.println("Khach hang: " + tenKH + " (MaKH: " + MaKH + ")");
+        System.out.println("Nhan vien: " + tenNV + " (MaNV: " + MaNV + ")");
+        System.out.println("------------------------------------------------------------------------------------------");
+        System.out.printf("%-15s %-30s %-10s %-15s %-15s %n", "Ma SP", "Ten San Pham", "So Luong", "Don Gia", "Thanh Tien");
+        System.out.println("------------------------------------------------------------------------------------------");
+        for (ChiTietHoaDon ct : dsChiTiet) {
+            ct.HienThiChiTiet();
+        }
+        System.out.println("------------------------------------------------------------------------------------------");
+        System.out.printf("Tong cong: %,.0f%n", tongTien);
+        System.out.println("==========================================================================================");
+    }
+}
 
 class ButBi extends SanPham
 {
@@ -643,6 +795,15 @@ class QuanLyNhanVien implements IQuanLy<NhanVien>
         else
             System.out.println("Khong tim thay nhan vien co ma la " + MaNV);
     }
+     public NhanVien TimTheoMa(String MaNV)
+    {
+        for (NhanVien NV : DSNhanVien) 
+        {
+            if (NV.getMaNV().equals(MaNV)) 
+                return NV;
+        }
+        return null; 
+    }
 
     @Override
     public List<NhanVien> TimKiem(String TuKhoa)
@@ -817,6 +978,16 @@ class QuanLyKhachHang implements IQuanLy<KhachHang>
         else
             System.out.println("Khong tim thay khach hang co ma la " + MaKH);
     }
+  
+    public KhachHang TimTheoMa(String MaKH)
+    {
+        for (KhachHang KH : DSKhachHang) 
+        {
+            if (KH.getMaKH().equals(MaKH)) 
+                return KH;
+        }
+        return null; 
+    }
 
     @Override
     public List<KhachHang> TimKiem(String TuKhoa)
@@ -903,6 +1074,272 @@ class QuanLyKhachHang implements IQuanLy<KhachHang>
     }
 }
 
+// =============== QUẢN LÝ HÓA ĐƠN ===============
+class QuanLyHoaDon implements IQuanLy<HoaDon>
+{
+    // Thay đổi: Dùng tên "DSHoaDon"
+    private List<HoaDon> DSHoaDon; 
+    private static QuanLyHoaDon instance;
+
+    public QuanLyHoaDon()
+    {
+        DSHoaDon = new ArrayList<>(); // Thay đổi
+    }
+
+    public static QuanLyHoaDon getInstance()
+    {
+        if (instance == null) 
+        {
+            instance = new QuanLyHoaDon();
+        }
+        return instance;
+    }
+
+    @Override
+    public void Them(HoaDon HD)
+    {
+        DSHoaDon.add(HD); // Thay đổi
+        System.out.println("Da them hoa don: " + HD.getMaHD() + "!");
+    }
+
+    @Override
+    public void Xoa(String MaHD)
+    {
+        boolean found = DSHoaDon.removeIf(HD -> HD.getMaHD().equals(MaHD)); // Thay đổi
+        if (found)
+            System.out.println("Da xoa hoa don co ma la " + MaHD);
+        else
+            System.out.println("Khong tim thay hoa don co ma la " + MaHD);
+    }
+
+
+    @Override
+    public void Sua(Scanner sc)
+    {
+        System.out.print("Nhap Ma Hoa Don can sua: ");
+        String MaHD = sc.nextLine();
+        HoaDon hd = TimTheoMa(MaHD);
+        if (hd == null) {
+            System.out.println("Khong tim thay hoa don!");
+            return;
+        }
+
+        // Hiển thị một menu con cho phép sửa Hóa đơn
+        int choice;
+        do {
+            System.out.println("--- SUA HOA DON " + MaHD + " ---");
+            System.out.println("1. Sua Ma Khach Hang");
+            System.out.println("2. Sua Ma Nhan Vien");
+            System.out.println("3. Them Chi Tiet San Pham");
+            System.out.println("4. Xoa Chi Tiet San Pham");
+            System.out.println("0. Quay lai");
+            System.out.print("Chon chuc nang: ");
+            choice = sc.nextInt(); sc.nextLine();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Nhap MaKH moi: ");
+                    String maKH_moi = sc.nextLine();
+                    // (Nên kiểm tra MaKH có tồn tại không)
+                    hd.setMaKH(maKH_moi);
+                    System.out.println("Da cap nhat MaKH.");
+                    break;
+                case 2:
+                    System.out.print("Nhap MaNV moi: ");
+                    String maNV_moi = sc.nextLine();
+                    // (Nên kiểm tra MaNV có tồn tại không)
+                    hd.setMaNV(maNV_moi);
+                    System.out.println("Da cap nhat MaNV.");
+                    break;
+                case 3:
+                    // (Tương tự logic Thêm HĐ: nhập MaCTHD, MaSP, SoLuong...)
+                    System.out.println("Chuc nang dang phat trien.");
+                    break;
+                case 4:
+                    System.out.print("Nhap MaCTHD can xoa: ");
+                    String maCTHD_xoa = sc.nextLine();
+                    hd.xoaChiTiet(maCTHD_xoa);
+                    break;
+            }
+        } while (choice != 0);
+    }
+
+    @Override
+    public List<HoaDon> TimKiem(String TuKhoa)
+    {
+        List<HoaDon> Kq = new ArrayList<>();
+        boolean found = false;
+        // Giữ nguyên logic tìm kiếm theo mã HĐ
+        for (HoaDon HD : DSHoaDon) // Thay đổi
+        {
+            if (HD.getMaHD().toLowerCase().contains(TuKhoa.toLowerCase()))
+            {
+                Kq.add(HD);
+                found = true;
+            } 
+        }
+        if (!found) System.out.println("Khong tim thay hoa don nao");
+        return Kq;
+    }
+    
+    public HoaDon TimTheoMa(String MaHD)
+    {
+        for (HoaDon HD : DSHoaDon) // Thay đổi
+            if (HD.getMaHD().equals(MaHD)) return HD;
+        return null;
+    }
+
+    @Override
+    public void XemDanhSach()
+    {
+        System.out.println("======================================================================================================");
+        System.out.println("                                      DANH SACH HOA DON");
+        System.out.println("======================================================================================================");
+        System.out.printf("%-15s %-25s %-20s %-20s %-15s %n", "Ma Hoa Don", "Ngay Lap", "Khach Hang", "Nhan Vien", "Tong Tien");
+        System.out.println("======================================================================================================");
+        
+        if (DSHoaDon.isEmpty()) { // Thay đổi
+            System.out.println("Chua co hoa don nao.");
+        } else {
+            for (HoaDon HD : DSHoaDon) // Thay đổi
+                HD.HienThiThongTin();
+        }
+    
+        System.out.println("======================================================================================================");
+        System.out.println("Tong so hoa don : " + DSHoaDon.size()); // Thay đổi
+    }
+
+    /**
+     * HÀM MỚI: Thống kê doanh thu theo UML
+     * Cần import java.util.Date và java.text.SimpleDateFormat
+     */
+    public double ThongKeDoanhThu(Date tuNgay, Date denNgay) {
+        double tongDoanhThu = 0;
+        for (HoaDon hd : DSHoaDon) { // Thay đổi
+            Date ngayLap = hd.getNgayLap();
+            // Kiểm tra xem ngayLap có nằm trong khoảng [tuNgay, denNgay] không
+            // !(ngayLap < tuNgay) && !(ngayLap > denNgay)
+            if (!ngayLap.before(tuNgay) && !ngayLap.after(denNgay)) {
+                tongDoanhThu += hd.getTongTien();
+            }
+        }
+        return tongDoanhThu;
+    }
+
+    // --- CẬP NHẬT FILE LOGIC ---
+    @Override
+    public void DocFile(String InputFile)
+    {
+        String fileHoaDon = InputFile;
+        String fileChiTiet = "chitiethoadon.txt"; 
+        
+        DSHoaDon.clear(); 
+
+        // === BƯỚC 1: Đọc file hoadon.txt ===
+        try (BufferedReader hdReader = new BufferedReader(new FileReader(fileHoaDon)))
+        {
+            String line;
+            while ((line = hdReader.readLine()) != null)
+            {
+                String[] data = line.split(";");
+                if (data.length < 4) continue;
+
+                String maHD = data[0].trim();
+                long timestamp = Long.parseLong(data[1].trim());
+                String maKH = data[2].trim();
+                String maNV = data[3].trim();
+
+                HoaDon hd = new HoaDon(maHD, maKH, maNV, new Date(timestamp));
+                DSHoaDon.add(hd); 
+            }
+        } catch (IOException e) {
+            System.out.println("Loi doc file " + fileHoaDon + ": " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Loi dinh dang so trong file " + fileHoaDon + ": " + e.getMessage());
+        }
+
+        // === BƯỚC 2: Đọc file chitiethoadon.txt (ĐÃ SỬA LỖI) ===
+        try (BufferedReader ctReader = new BufferedReader(new FileReader(fileChiTiet)))
+        {
+            String line;
+            while ((line = ctReader.readLine()) != null)
+            {
+                // SỬA Ở ĐÂY: Phải dùng biến 'line' đã đọc từ 'while'
+                String[] data = line.split(";"); 
+                
+                if (data.length < 5) continue;
+
+                String maHD = data[0].trim();
+                String maCTHD = data[1].trim(); 
+                String maSP = data[2].trim(); 
+                int soLuong = Integer.parseInt(data[3].trim());
+                double donGia = Double.parseDouble(data[4].trim()); 
+
+                HoaDon hd = this.TimTheoMa(maHD);
+                
+                if (hd != null) {
+                    ChiTietHoaDon ct = new ChiTietHoaDon(maCTHD, maSP, soLuong, donGia);
+                    // Dòng này rất quan trọng, nó sẽ tính tongTien
+                    hd.themChiTiet(ct); 
+                } else {
+                     System.out.println("Canh bao: Khong tim thay HĐ (" + maHD + ") cho chi tiet");
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Loi doc file " + fileChiTiet + ": " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Loi dinh dang so trong file " + fileChiTiet + ": " + e.getMessage());
+        }
+
+        System.out.println("Da doc file hoadon.txt");
+    }
+
+    @Override
+    public void GhiFile(String OutputFile)
+    {
+       String fileHoaDon = OutputFile; // "hoadon.txt"
+        String fileChiTiet = "chitiethoadon.txt"; 
+
+        // 1. Ghi file hoadon.txt
+        try (BufferedWriter hdWriter = new BufferedWriter(new FileWriter(fileHoaDon)))
+        {
+            for (HoaDon hd : DSHoaDon) { // Thay đổi
+                // Cập nhật: Lưu MaKH và MaNV (String)
+                // Format: MaHD;NgayLap_Timestamp;MaKH;MaNV
+                String line = hd.getMaHD() + ";" + 
+                              hd.getNgayLap().getTime() + ";" + 
+                              hd.getMaKH() + ";" + // Cập nhật
+                              hd.getMaNV(); // Cập nhật
+                hdWriter.write(line);
+                hdWriter.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Loi ghi file hoa don: " + e.getMessage());
+        }
+        // 2. Ghi file chitiethoadon.txt 
+        try (BufferedWriter ctWriter = new BufferedWriter(new FileWriter(fileChiTiet))) 
+        { 
+            for (HoaDon hd : DSHoaDon) { // Thay đổi
+                for (ChiTietHoaDon ct : hd.getDsChiTiet()) { 
+                // Cập nhật: Thêm MaCTHD, MaSP, DonGia 
+                // Format: MaHD;MaCTHD;MaSP;SoLuong;DonGia 
+                    String line = hd.getMaHD() + ";" + 
+                                    ct.getMaCTHD() + ";" + 
+                                    ct.getMaSP() + ";" +  
+                                    ct.getSoLuong() + ";" + 
+                                    ct.getDonGia(); 
+                    ctWriter.write(line); 
+                    ctWriter.newLine(); 
+                } 
+            } 
+        } catch (IOException e) { 
+            System.out.println("Loi ghi file chi tiet hoa don: " + e.getMessage()); 
+        } 
+        System.out.println("Da luu du lieu hoa don vao file " + fileHoaDon + " va " + fileChiTiet); 
+        
+    }
+
+}
 
 // =============== MAIN ===============
 public class OOP_Project 
@@ -918,6 +1355,8 @@ public class OOP_Project
         QLKH.DocFile("khachhang.txt");
         QuanLySanPham QLSP = QuanLySanPham.getInstance();
         QLSP.DocFile("sanpham.txt");
+        QuanLyHoaDon QLHD = QuanLyHoaDon.getInstance();
+        QLHD.DocFile("hoadon.txt");
 
         //Menu chính
         do 
@@ -932,7 +1371,7 @@ public class OOP_Project
                 case 1: MenuKhachHang(); break;
                 case 2: MenuNhanVien(); break;
                 case 3: MenuSanPham(); break;
-            
+                case 4: MenuHoaDon(); break;
                 default: System.out.println("Lua chon khong hop le."); break;
             }
             Pause();
@@ -1205,6 +1644,183 @@ public class OOP_Project
 
                 case 5:
                     QLKH.GhiFile("danhsach_khachhang.txt"); 
+                    break;
+
+                case 0:
+                    return;
+
+                default:
+                    System.out.println("Lua chon khong hop le.");
+                    break;
+            }
+            Pause();
+        } while (true);
+    }
+    // =============== HÀM HIỂN THỊ MENU QUẢN LÝ HÓA ĐƠN ===============
+    private static void MenuHoaDon()
+    {
+        QuanLyHoaDon QLHD = QuanLyHoaDon.getInstance();
+        QuanLySanPham QLSP = QuanLySanPham.getInstance();
+        QuanLyKhachHang QLKH = QuanLyKhachHang.getInstance();
+        QuanLyNhanVien QLNV = QuanLyNhanVien.getInstance();
+        
+        // Cần cho chức năng Thống kê
+        SimpleDateFormat sdfParser = new SimpleDateFormat("dd/MM/yyyy");
+
+        do 
+        {
+            ClearScreen();
+            QLHD.XemDanhSach();
+            System.out.print("\n\n\n");
+            System.out.println("=============================================================================================");
+            System.out.println("                                      QUAN LY HOA DON                                      ");
+            System.out.println("=============================================================================================");
+            System.out.println("      1. Tao hoa don moi");
+            System.out.println("      2. Xoa hoa don");
+            System.out.println("      3. Sua thong tin hoa don");
+            System.out.println("      4. Xem chi tiet hoa don");
+            System.out.println("      5. Tim kiem hoa don (theo MaHD)");
+            System.out.println("      6. Luu danh sach hoa don vao file");
+            System.out.println("      7. Thong ke doanh thu theo ngay"); // MỚI
+            System.out.println("      0. Quay lai Menu Chinh");
+            System.out.println("=============================================================================================");
+
+            System.out.print("Chon chuc nang : ");
+            int choice = sc.nextInt(); sc.nextLine();
+
+            switch (choice) 
+            {
+                case 1:
+                    // === CẬP NHẬT QUY TRÌNH TẠO HÓA ĐƠN ===
+                    System.out.print("Nhap ma hoa don (vi du: HD001): ");
+                    String maHD = sc.nextLine().trim();
+                    // (Nên kiểm tra mã HĐ có trùng không)
+                    
+                    // Lấy khách hàng
+                    KhachHang kh = null;
+                    String maKH_Chon = "";
+                    while (kh == null) {
+                        System.out.print("Nhap ma khach hang: ");
+                        maKH_Chon = sc.nextLine().trim();
+                        kh = QLKH.TimTheoMa(maKH_Chon);
+                        if (kh == null) System.out.println("Khong tim thay khach hang. Vui long nhap lai.");
+                        else System.out.println("Khach hang: " + kh.getHoTen());
+                    }
+
+                    // Lấy nhân viên
+                    NhanVien nv = null;
+                    String maNV_Chon = "";
+                    while (nv == null) {
+                        System.out.print("Nhap ma nhan vien lap hoa don: ");
+                        maNV_Chon = sc.nextLine().trim();
+                        nv = QLNV.TimTheoMa(maNV_Chon);
+                        if (nv == null) System.out.println("Khong tim thay nhan vien. Vui long nhap lai.");
+                        else System.out.println("Nhan vien: " + nv.getHoTen());
+                    }
+                    
+                    // Tạo đối tượng Hóa đơn (dùng String MaKH, MaNV)
+                    HoaDon hdMoi = new HoaDon(maHD, maKH_Chon, maNV_Chon, new Date());
+
+                    // Thêm sản phẩm vào chi tiết hóa đơn
+                    String themTiep;
+                    int chiTietCounter = 1; // Để tạo MaCTHD
+                    do {
+                        SanPham sp = null;
+                        String maSP_Chon = "";
+                        while (sp == null) {
+                            System.out.print("Nhap ma san pham can them: ");
+                            maSP_Chon = sc.nextLine().trim();
+                            sp = QLSP.TimTheoMa(maSP_Chon);
+                            if (sp == null) System.out.println("Khong tim thay san pham. Vui long nhap lai.");
+                        }
+
+                        System.out.print("Nhap so luong: ");
+                        int soLuong = sc.nextInt(); sc.nextLine();
+                        // (Nên kiểm tra số lượng tồn kho nếu có)
+
+                        // Lấy đơn giá tại thời điểm bán
+                        double donGia = sp.getGiaBan();
+                        
+                        // Tạo MaCTHD (ví dụ: HD001-1, HD001-2)
+                        String maCTHD = maHD + "-" + chiTietCounter;
+                        chiTietCounter++;
+
+                        // Tạo chi tiết HĐ (dùng String MaSP)
+                        ChiTietHoaDon ctMoi = new ChiTietHoaDon(maCTHD, maSP_Chon, soLuong, donGia);
+                        hdMoi.themChiTiet(ctMoi);
+                        System.out.println("Da them san pham: " + sp.getTenSP());
+
+                        System.out.print("Ban co muon them san pham khac khong? (c/k): ");
+                        themTiep = sc.nextLine().trim();
+                    } while (themTiep.equalsIgnoreCase("c"));
+
+                    // Thêm HĐ vào danh sách quản lý
+                    QLHD.Them(hdMoi);
+                    System.out.println("DA TAO HOA DON MOI THANH CONG!");
+                    hdMoi.HienThiChiTietHoaDon(); // Hiển thị chi tiết HĐ vừa tạo
+                    break;
+
+                case 2:
+                    System.out.print("Nhap ma hoa don can xoa: ");
+                    String maHD_Xoa = sc.nextLine().trim();
+                    QLHD.Xoa(maHD_Xoa);
+                    break;
+
+                case 3:
+                    QLHD.Sua(sc); // Gọi hàm sửa
+                    break;
+                case 4:
+                    System.out.print("Nhap ma hoa don can xem chi tiet: ");
+                    String maHD_Xem = sc.nextLine().trim();
+                    HoaDon hdXem = QLHD.TimTheoMa(maHD_Xem);
+                    if (hdXem != null) {
+                        hdXem.HienThiChiTietHoaDon();
+                    } else {
+                        System.out.println("Khong tim thay hoa don voi ma: " + maHD_Xem);
+                    }
+                    break;
+
+                case 5:
+                    System.out.print("Nhap ma hoa don can tim: ");
+                    String tukhoa = sc.nextLine().trim();
+                    List<HoaDon> HD_Found = QLHD.TimKiem(tukhoa);
+                    System.out.println("======================================================================================================");
+                    System.out.println("                                      KET QUA TIM KIEM");
+                    // (Hiển thị kết quả như cũ)
+                    System.out.printf("%-15s %-25s %-20s %-20s %-15s %n", "Ma Hoa Don", "Ngay Lap", "Khach Hang", "Nhan Vien", "Tong Tien");
+                    System.out.println("======================================================================================================");
+                    for (HoaDon HD : HD_Found)
+                        HD.HienThiThongTin();
+                    break;
+
+                case 6:
+                    QLHD.GhiFile("hoadon.txt"); // Sẽ ghi ra hoadon.txt và chitiethoadon.txt
+                    break;
+
+                case 7: // MỚI: Thống kê doanh thu
+                    try {
+                        System.out.print("Nhap ngay bat dau (dd/MM/yyyy): ");
+                        Date tuNgay = sdfParser.parse(sc.nextLine());
+                        
+                        System.out.print("Nhap ngay ket thuc (dd/MM/yyyy): ");
+                        Date denNgay = sdfParser.parse(sc.nextLine());
+                        
+                        // Xử lý để `denNgay` tính cả cuối ngày
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(denNgay);
+                        c.set(Calendar.HOUR_OF_DAY, 23);
+                        c.set(Calendar.MINUTE, 59);
+                        c.set(Calendar.SECOND, 59);
+                        denNgay = c.getTime();
+
+                        double doanhThu = QLHD.ThongKeDoanhThu(tuNgay, denNgay);
+                        
+                        System.out.printf("Tong doanh thu tu %s den %s la: %,.0f VND%n",
+                            sdfParser.format(tuNgay), sdfParser.format(denNgay), doanhThu);
+
+                    } catch (Exception e) {
+                        System.out.println("Loi dinh dang ngay! Vui long nhap theo format dd/MM/yyyy.");
+                    }
                     break;
 
                 case 0:
