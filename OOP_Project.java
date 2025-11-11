@@ -255,7 +255,7 @@ class SoGhi extends SanPham
     public void HienThiChiTiet()
     {
         super.HienThiChiTiet();
-        System.out.printf("Chi tiet so ghi - So trang : %i, Loai bia : %s %n", SoTrang, LoaiBia);
+        System.out.printf("Chi tiet so ghi - So trang : %d, Loai bia : %s %n", SoTrang, LoaiBia);
     }
 }
 
@@ -441,7 +441,6 @@ class QuanLySanPham implements IQuanLy<SanPham>
             SP.HienThiThongTin();
     
         System.out.println("=============================================================================================");
-        System.out.println("Tong so san pham : " + DSSanPham.size());
     }
 
     public SanPham TimTheoMa(String MaSP)
@@ -545,7 +544,6 @@ class QuanLySanPham implements IQuanLy<SanPham>
             }
 
             output.write("============================================================================================="); output.newLine();
-            output.write("Tong so san pham : " + DSSanPham.size());
         }
         catch (IOException e) 
         {
@@ -675,7 +673,6 @@ class QuanLyNhanVien implements IQuanLy<NhanVien>
             NV.HienThiThongTin();
     
         System.out.println("================================================================================================================================================");
-        System.out.println("Tong so nhan vien : " + DSNhanVien.size());
     }
 
     @Override
@@ -718,8 +715,7 @@ class QuanLyNhanVien implements IQuanLy<NhanVien>
                 bw.newLine();
             }
 
-            bw.write("================================================================================================================================================"); bw.newLine();
-            bw.write("Tong so nhan vien : " + DSNhanVien.size());
+            bw.write("================================================================================================================================================"); bw.newLine();        
         }
         catch (IOException e) 
         {
@@ -848,10 +844,9 @@ class QuanLyKhachHang implements IQuanLy<KhachHang>
         for (KhachHang KH : DSKhachHang)
             KH.HienThiThongTin();
     
-        System.out.println("===============================================================================================================================================");
-        System.out.println("Tong so khach hang : " + DSKhachHang.size());
+        System.out.println("===============================================================================================================================================");    
     }
-
+    
     @Override
     public void DocFile(String InputFile){
         try (BufferedReader br = new BufferedReader(new FileReader(InputFile))){
@@ -894,7 +889,6 @@ class QuanLyKhachHang implements IQuanLy<KhachHang>
             }
 
             bw.write("==============================================================================================================================================="); bw.newLine();
-            bw.write("Tong so nhan vien : " + DSKhachHang.size());
         }
         catch (IOException e) 
         {
@@ -932,13 +926,12 @@ public class OOP_Project
                 case 1: MenuKhachHang(); break;
                 case 2: MenuNhanVien(); break;
                 case 3: MenuSanPham(); break;
-            
+                case 4:
+                case 5: ThongKe(); break;
                 default: System.out.println("Lua chon khong hop le."); break;
             }
             Pause();
         } while (true);
-
-
     }
 
     // =============== HÀM TẠM DỪNG CHƯƠNG TRÌNH ===============
@@ -1217,4 +1210,20 @@ public class OOP_Project
             Pause();
         } while (true);
     }
+
+    // =============== THỐNG KÊ ===============
+    private static void ThongKe()
+    {
+        ClearScreen();
+        System.out.println("=========================================================");
+        System.out.println("                     THONG KE HE THONG                   ");
+        System.out.println("=========================================================");
+        System.out.printf("Tong so khach hang : %3d %n", KhachHang.getSoLuongKH());
+        System.out.printf("Tong so nhan vien : %3d %n", NhanVien.getSoLuongNV());
+        System.out.printf("Tong so san pham : %3d %n", SanPham.getSoLuongSP());
+        //System.out.printf("Tong so hoa don : %3d %n", HoaDon.getSoLuongHD());
+        //System.out.printf("Tong doanh thu : %,3.0f %n", QuanLyHoaDon.getInstance().ThongKeDoanhThu());
+        System.out.println("=========================================================");
+    }
 }
+
