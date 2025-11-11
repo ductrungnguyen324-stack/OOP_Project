@@ -1,8 +1,20 @@
-SP001;But bi Thien Long;But bi;5000;Thien Long;Xanh;0.7
-SP002;Vo ke ngang Campus;So ghi;15000;Campus;100;Cung
-SP003;Thuoc ke nhua 30cm;Thuoc;8000;Viet Nam
-SP004;But chi 2B;But chi;3000;Thien Long;Chi kim;0.7mm
-SP005;Tay trang;Dung cu;2000;Viet Nam
-SP006;But da quang;But viet;12000;Thien Long
-SP007;Giay A4 (500 to);Giay;80000;Double A4;A4
-SP008;Keo van phong;Dung cu;25000;Viet Nam
+SP001; Thien Long 027; But bi; 4500; Thien Long; Xanh; 0.7
+SP002; Gel Xoay EnerGel; But bi; 35000; Pentel; Den; 0.5
+SP003; But chi Go Tieu Chuan; But chi; 5000; Staedtler; Chi go; HB
+SP004; But chi Kim Graphgear 500; But chi; 75000; Pentel; Chi kim; 2B
+SP005; Giay A4 Double A (500 to); Giay; 75000; Double A; Giay in van phong 80gsm
+SP006; Giay Note 3x3 Vang; Giay; 12000; 3M (Post-it); Giay ghi chu (Note)
+SP007; So Tay Bi Quyen; So ghi; 150000; Moleskine; 240; Bia da cung
+SP008; So Ghi Chep Lo Xo A5; So ghi; 45000; Campus; 160; Bia nhua deo
+SP009; But Xoa Nuoc; But xoa; 18000; SDI
+SP010; Keo Dan Giay Kho; Keo; 10000; Pritt
+SP011; Bang Keo Trong Lon; Bang keo; 15000; Van Phuc
+SP012; But Da Quang Neon; But khac; 10000; Stabilo
+SP013; Keo Cat Giay 20cm; Dung cu Cat; 35000; Deli
+SP014; Bam Kim So 10; Bam kim; 25000; Max
+SP015; But Bi 4 Mau; But bi; 22000; Bic; Den/Do/Xanh/Luc; 1.0
+SP016; Giay Bao Tap Ke Ngang; Giay; 60000; Vinh Tien; Giay in hoc sinh 70gsm
+SP017; But chi Go Tap Ve; But chi; 6500; Faber-Castell; Chi go; 4B
+SP018; So Ghi A6 Mini; So ghi; 20000; Hai Tien; 100; Bia giay mem
+SP019; But Bi Gel Kho Phat; But bi; 30000; Pilot; Den; 0.4
+SP020; But chi Bam Ngoi 0.7; But chi; 15000; Thien Long; Chi bam; HB

@@ -407,7 +407,7 @@ class SoGhi extends SanPham
     public void HienThiChiTiet()
     {
         super.HienThiChiTiet();
-        System.out.printf("Chi tiet so ghi - So trang : %i, Loai bia : %s %n", SoTrang, LoaiBia);
+        System.out.printf("Chi tiet so ghi - So trang : %d, Loai bia : %s %n", SoTrang, LoaiBia);
     }
 }
 
@@ -593,7 +593,6 @@ class QuanLySanPham implements IQuanLy<SanPham>
             SP.HienThiThongTin();
     
         System.out.println("=============================================================================================");
-        System.out.println("Tong so san pham : " + DSSanPham.size());
     }
 
     public SanPham TimTheoMa(String MaSP)
@@ -697,7 +696,6 @@ class QuanLySanPham implements IQuanLy<SanPham>
             }
 
             output.write("============================================================================================="); output.newLine();
-            output.write("Tong so san pham : " + DSSanPham.size());
         }
         catch (IOException e) 
         {
@@ -836,7 +834,6 @@ class QuanLyNhanVien implements IQuanLy<NhanVien>
             NV.HienThiThongTin();
     
         System.out.println("================================================================================================================================================");
-        System.out.println("Tong so nhan vien : " + DSNhanVien.size());
     }
 
     @Override
@@ -879,8 +876,7 @@ class QuanLyNhanVien implements IQuanLy<NhanVien>
                 bw.newLine();
             }
 
-            bw.write("================================================================================================================================================"); bw.newLine();
-            bw.write("Tong so nhan vien : " + DSNhanVien.size());
+            bw.write("================================================================================================================================================"); bw.newLine();        
         }
         catch (IOException e) 
         {
@@ -1019,10 +1015,9 @@ class QuanLyKhachHang implements IQuanLy<KhachHang>
         for (KhachHang KH : DSKhachHang)
             KH.HienThiThongTin();
     
-        System.out.println("===============================================================================================================================================");
-        System.out.println("Tong so khach hang : " + DSKhachHang.size());
+        System.out.println("===============================================================================================================================================");    
     }
-
+    
     @Override
     public void DocFile(String InputFile){
         try (BufferedReader br = new BufferedReader(new FileReader(InputFile))){
@@ -1065,7 +1060,6 @@ class QuanLyKhachHang implements IQuanLy<KhachHang>
             }
 
             bw.write("==============================================================================================================================================="); bw.newLine();
-            bw.write("Tong so nhan vien : " + DSKhachHang.size());
         }
         catch (IOException e) 
         {
@@ -1371,13 +1365,13 @@ public class OOP_Project
                 case 1: MenuKhachHang(); break;
                 case 2: MenuNhanVien(); break;
                 case 3: MenuSanPham(); break;
+
                 case 4: MenuHoaDon(); break;
+
                 default: System.out.println("Lua chon khong hop le."); break;
             }
             Pause();
         } while (true);
-
-
     }
 
     // =============== HÀM TẠM DỪNG CHƯƠNG TRÌNH ===============
@@ -1670,7 +1664,7 @@ public class OOP_Project
         do 
         {
             ClearScreen();
-            QLHD.XemDanhSach();
+           
             System.out.print("\n\n\n");
             System.out.println("=============================================================================================");
             System.out.println("                                      QUAN LY HOA DON                                      ");
@@ -1681,7 +1675,7 @@ public class OOP_Project
             System.out.println("      4. Xem chi tiet hoa don");
             System.out.println("      5. Tim kiem hoa don (theo MaHD)");
             System.out.println("      6. Luu danh sach hoa don vao file");
-            System.out.println("      7. Thong ke doanh thu theo ngay"); // MỚI
+            System.out.println("      7. Danh sach hoa don ");
             System.out.println("      0. Quay lai Menu Chinh");
             System.out.println("=============================================================================================");
 
@@ -1797,30 +1791,8 @@ public class OOP_Project
                     QLHD.GhiFile("hoadon.txt"); // Sẽ ghi ra hoadon.txt và chitiethoadon.txt
                     break;
 
-                case 7: // MỚI: Thống kê doanh thu
-                    try {
-                        System.out.print("Nhap ngay bat dau (dd/MM/yyyy): ");
-                        Date tuNgay = sdfParser.parse(sc.nextLine());
-                        
-                        System.out.print("Nhap ngay ket thuc (dd/MM/yyyy): ");
-                        Date denNgay = sdfParser.parse(sc.nextLine());
-                        
-                        // Xử lý để `denNgay` tính cả cuối ngày
-                        Calendar c = Calendar.getInstance();
-                        c.setTime(denNgay);
-                        c.set(Calendar.HOUR_OF_DAY, 23);
-                        c.set(Calendar.MINUTE, 59);
-                        c.set(Calendar.SECOND, 59);
-                        denNgay = c.getTime();
-
-                        double doanhThu = QLHD.ThongKeDoanhThu(tuNgay, denNgay);
-                        
-                        System.out.printf("Tong doanh thu tu %s den %s la: %,.0f VND%n",
-                            sdfParser.format(tuNgay), sdfParser.format(denNgay), doanhThu);
-
-                    } catch (Exception e) {
-                        System.out.println("Loi dinh dang ngay! Vui long nhap theo format dd/MM/yyyy.");
-                    }
+                case 7: 
+                    QLHD.XemDanhSach();
                     break;
 
                 case 0:
@@ -1832,5 +1804,8 @@ public class OOP_Project
             }
             Pause();
         } while (true);
+
+
     }
 }
+
